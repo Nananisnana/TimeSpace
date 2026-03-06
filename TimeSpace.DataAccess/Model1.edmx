@@ -1,0 +1,391 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="ChronoTaleDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Tbl_Donemler">
+          <Key>
+            <PropertyRef Name="DonemID" />
+          </Key>
+          <Property Name="DonemID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="DonemAdi" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="Aciklama" Type="nvarchar(max)" />
+          <Property Name="AktifMi" Type="bit" />
+          <Property Name="BaslangicYili" Type="int" />
+          <Property Name="BitisYili" Type="int" />
+        </EntityType>
+        <EntityType Name="Tbl_Hikayeler">
+          <Key>
+            <PropertyRef Name="HikayeID" />
+          </Key>
+          <Property Name="HikayeID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="KullaniciID" Type="int" />
+          <Property Name="DonemID" Type="int" />
+          <Property Name="Baslik" Type="nvarchar" MaxLength="200" />
+          <Property Name="HikayeMetni" Type="nvarchar(max)" />
+          <Property Name="GorselYolu" Type="nvarchar" MaxLength="500" />
+          <Property Name="OlusturmaTarihi" Type="datetime" />
+        </EntityType>
+        <EntityType Name="Tbl_HikayeOzellikleri">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="HikayeID" Type="int" />
+          <Property Name="OzellikID" Type="int" />
+        </EntityType>
+        <EntityType Name="Tbl_Karakterler">
+          <Key>
+            <PropertyRef Name="KarakterID" />
+          </Key>
+          <Property Name="KarakterID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="AdSoyad" Type="nvarchar" MaxLength="100" />
+          <Property Name="Aciklama" Type="nvarchar(max)" />
+          <Property Name="Gorsel" Type="nvarchar(max)" />
+          <Property Name="DonemID" Type="int" />
+        </EntityType>
+        <EntityType Name="Tbl_KarakterOzellikleri">
+          <Key>
+            <PropertyRef Name="OzellikID" />
+          </Key>
+          <Property Name="OzellikID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="OzellikAdi" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="PromptKodu" Type="nvarchar" MaxLength="100" />
+        </EntityType>
+        <EntityType Name="Tbl_Kullanicilar">
+          <Key>
+            <PropertyRef Name="KullaniciID" />
+          </Key>
+          <Property Name="KullaniciID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="KullaniciAdi" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="SifreHash" Type="nvarchar" MaxLength="256" Nullable="false" />
+          <Property Name="AdSoyad" Type="nvarchar" MaxLength="100" />
+          <Property Name="KayitTarihi" Type="datetime" />
+          <Property Name="Email" Type="nvarchar" MaxLength="100" />
+          <Property Name="KullaniciTipi" Type="nvarchar" MaxLength="20" />
+          <Property Name="Yas" Type="int" />
+          <Property Name="Cinsiyet" Type="nvarchar" MaxLength="20" />
+          <Property Name="ProfilResmi" Type="image" />
+        </EntityType>
+        <Association Name="FK_Ara_Hikaye">
+          <End Role="Tbl_Hikayeler" Type="Self.Tbl_Hikayeler" Multiplicity="0..1" />
+          <End Role="Tbl_HikayeOzellikleri" Type="Self.Tbl_HikayeOzellikleri" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tbl_Hikayeler">
+              <PropertyRef Name="HikayeID" />
+            </Principal>
+            <Dependent Role="Tbl_HikayeOzellikleri">
+              <PropertyRef Name="HikayeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Ara_Ozellik">
+          <End Role="Tbl_KarakterOzellikleri" Type="Self.Tbl_KarakterOzellikleri" Multiplicity="0..1" />
+          <End Role="Tbl_HikayeOzellikleri" Type="Self.Tbl_HikayeOzellikleri" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tbl_KarakterOzellikleri">
+              <PropertyRef Name="OzellikID" />
+            </Principal>
+            <Dependent Role="Tbl_HikayeOzellikleri">
+              <PropertyRef Name="OzellikID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Hikaye_Donem">
+          <End Role="Tbl_Donemler" Type="Self.Tbl_Donemler" Multiplicity="0..1" />
+          <End Role="Tbl_Hikayeler" Type="Self.Tbl_Hikayeler" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tbl_Donemler">
+              <PropertyRef Name="DonemID" />
+            </Principal>
+            <Dependent Role="Tbl_Hikayeler">
+              <PropertyRef Name="DonemID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Hikaye_Kullanici">
+          <End Role="Tbl_Kullanicilar" Type="Self.Tbl_Kullanicilar" Multiplicity="0..1" />
+          <End Role="Tbl_Hikayeler" Type="Self.Tbl_Hikayeler" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tbl_Kullanicilar">
+              <PropertyRef Name="KullaniciID" />
+            </Principal>
+            <Dependent Role="Tbl_Hikayeler">
+              <PropertyRef Name="KullaniciID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="ChronoTaleDBModelStoreContainer">
+          <EntitySet Name="Tbl_Donemler" EntityType="Self.Tbl_Donemler" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Tbl_Hikayeler" EntityType="Self.Tbl_Hikayeler" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Tbl_HikayeOzellikleri" EntityType="Self.Tbl_HikayeOzellikleri" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Tbl_Karakterler" EntityType="Self.Tbl_Karakterler" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Tbl_KarakterOzellikleri" EntityType="Self.Tbl_KarakterOzellikleri" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Tbl_Kullanicilar" EntityType="Self.Tbl_Kullanicilar" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Ara_Hikaye" Association="Self.FK_Ara_Hikaye">
+            <End Role="Tbl_Hikayeler" EntitySet="Tbl_Hikayeler" />
+            <End Role="Tbl_HikayeOzellikleri" EntitySet="Tbl_HikayeOzellikleri" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Ara_Ozellik" Association="Self.FK_Ara_Ozellik">
+            <End Role="Tbl_KarakterOzellikleri" EntitySet="Tbl_KarakterOzellikleri" />
+            <End Role="Tbl_HikayeOzellikleri" EntitySet="Tbl_HikayeOzellikleri" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Hikaye_Donem" Association="Self.FK_Hikaye_Donem">
+            <End Role="Tbl_Donemler" EntitySet="Tbl_Donemler" />
+            <End Role="Tbl_Hikayeler" EntitySet="Tbl_Hikayeler" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Hikaye_Kullanici" Association="Self.FK_Hikaye_Kullanici">
+            <End Role="Tbl_Kullanicilar" EntitySet="Tbl_Kullanicilar" />
+            <End Role="Tbl_Hikayeler" EntitySet="Tbl_Hikayeler" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="ChronoTaleDBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Tbl_Donemler">
+          <Key>
+            <PropertyRef Name="DonemID" />
+          </Key>
+          <Property Name="DonemID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="DonemAdi" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Aciklama" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="AktifMi" Type="Boolean" />
+          <NavigationProperty Name="Tbl_Hikayeler" Relationship="Self.FK_Hikaye_Donem" FromRole="Tbl_Donemler" ToRole="Tbl_Hikayeler" />
+          <Property Name="BaslangicYili" Type="Int32" />
+          <Property Name="BitisYili" Type="Int32" />
+        </EntityType>
+        <EntityType Name="Tbl_Hikayeler">
+          <Key>
+            <PropertyRef Name="HikayeID" />
+          </Key>
+          <Property Name="HikayeID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="KullaniciID" Type="Int32" />
+          <Property Name="DonemID" Type="Int32" />
+          <Property Name="Baslik" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="HikayeMetni" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="GorselYolu" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="OlusturmaTarihi" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Tbl_Donemler" Relationship="Self.FK_Hikaye_Donem" FromRole="Tbl_Hikayeler" ToRole="Tbl_Donemler" />
+          <NavigationProperty Name="Tbl_HikayeOzellikleri" Relationship="Self.FK_Ara_Hikaye" FromRole="Tbl_Hikayeler" ToRole="Tbl_HikayeOzellikleri" />
+          <NavigationProperty Name="Tbl_Kullanicilar" Relationship="Self.FK_Hikaye_Kullanici" FromRole="Tbl_Hikayeler" ToRole="Tbl_Kullanicilar" />
+        </EntityType>
+        <EntityType Name="Tbl_HikayeOzellikleri">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="HikayeID" Type="Int32" />
+          <Property Name="OzellikID" Type="Int32" />
+          <NavigationProperty Name="Tbl_Hikayeler" Relationship="Self.FK_Ara_Hikaye" FromRole="Tbl_HikayeOzellikleri" ToRole="Tbl_Hikayeler" />
+          <NavigationProperty Name="Tbl_KarakterOzellikleri" Relationship="Self.FK_Ara_Ozellik" FromRole="Tbl_HikayeOzellikleri" ToRole="Tbl_KarakterOzellikleri" />
+        </EntityType>
+        <EntityType Name="Tbl_KarakterOzellikleri">
+          <Key>
+            <PropertyRef Name="OzellikID" />
+          </Key>
+          <Property Name="OzellikID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="OzellikAdi" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="PromptKodu" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Tbl_HikayeOzellikleri" Relationship="Self.FK_Ara_Ozellik" FromRole="Tbl_KarakterOzellikleri" ToRole="Tbl_HikayeOzellikleri" />
+        </EntityType>
+        <EntityType Name="Tbl_Kullanicilar">
+          <Key>
+            <PropertyRef Name="KullaniciID" />
+          </Key>
+          <Property Name="KullaniciID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="KullaniciAdi" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="SifreHash" Type="String" MaxLength="256" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="AdSoyad" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="KayitTarihi" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Tbl_Hikayeler" Relationship="Self.FK_Hikaye_Kullanici" FromRole="Tbl_Kullanicilar" ToRole="Tbl_Hikayeler" />
+          <Property Name="Email" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="KullaniciTipi" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Yas" Type="Int32" />
+          <Property Name="Cinsiyet" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="ProfilResmi" Type="Binary" MaxLength="Max" FixedLength="false" />
+        </EntityType>
+        <Association Name="FK_Hikaye_Donem">
+          <End Role="Tbl_Donemler" Type="Self.Tbl_Donemler" Multiplicity="0..1" />
+          <End Role="Tbl_Hikayeler" Type="Self.Tbl_Hikayeler" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tbl_Donemler">
+              <PropertyRef Name="DonemID" />
+            </Principal>
+            <Dependent Role="Tbl_Hikayeler">
+              <PropertyRef Name="DonemID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Ara_Hikaye">
+          <End Role="Tbl_Hikayeler" Type="Self.Tbl_Hikayeler" Multiplicity="0..1" />
+          <End Role="Tbl_HikayeOzellikleri" Type="Self.Tbl_HikayeOzellikleri" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tbl_Hikayeler">
+              <PropertyRef Name="HikayeID" />
+            </Principal>
+            <Dependent Role="Tbl_HikayeOzellikleri">
+              <PropertyRef Name="HikayeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Hikaye_Kullanici">
+          <End Role="Tbl_Kullanicilar" Type="Self.Tbl_Kullanicilar" Multiplicity="0..1" />
+          <End Role="Tbl_Hikayeler" Type="Self.Tbl_Hikayeler" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tbl_Kullanicilar">
+              <PropertyRef Name="KullaniciID" />
+            </Principal>
+            <Dependent Role="Tbl_Hikayeler">
+              <PropertyRef Name="KullaniciID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Ara_Ozellik">
+          <End Role="Tbl_KarakterOzellikleri" Type="Self.Tbl_KarakterOzellikleri" Multiplicity="0..1" />
+          <End Role="Tbl_HikayeOzellikleri" Type="Self.Tbl_HikayeOzellikleri" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tbl_KarakterOzellikleri">
+              <PropertyRef Name="OzellikID" />
+            </Principal>
+            <Dependent Role="Tbl_HikayeOzellikleri">
+              <PropertyRef Name="OzellikID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="ChronoTaleDBEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Tbl_Donemler" EntityType="Self.Tbl_Donemler" />
+          <EntitySet Name="Tbl_Hikayeler" EntityType="Self.Tbl_Hikayeler" />
+          <EntitySet Name="Tbl_HikayeOzellikleri" EntityType="Self.Tbl_HikayeOzellikleri" />
+          <EntitySet Name="Tbl_KarakterOzellikleri" EntityType="Self.Tbl_KarakterOzellikleri" />
+          <EntitySet Name="Tbl_Kullanicilar" EntityType="Self.Tbl_Kullanicilar" />
+          <AssociationSet Name="FK_Hikaye_Donem" Association="Self.FK_Hikaye_Donem">
+            <End Role="Tbl_Donemler" EntitySet="Tbl_Donemler" />
+            <End Role="Tbl_Hikayeler" EntitySet="Tbl_Hikayeler" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Ara_Hikaye" Association="Self.FK_Ara_Hikaye">
+            <End Role="Tbl_Hikayeler" EntitySet="Tbl_Hikayeler" />
+            <End Role="Tbl_HikayeOzellikleri" EntitySet="Tbl_HikayeOzellikleri" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Hikaye_Kullanici" Association="Self.FK_Hikaye_Kullanici">
+            <End Role="Tbl_Kullanicilar" EntitySet="Tbl_Kullanicilar" />
+            <End Role="Tbl_Hikayeler" EntitySet="Tbl_Hikayeler" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Ara_Ozellik" Association="Self.FK_Ara_Ozellik">
+            <End Role="Tbl_KarakterOzellikleri" EntitySet="Tbl_KarakterOzellikleri" />
+            <End Role="Tbl_HikayeOzellikleri" EntitySet="Tbl_HikayeOzellikleri" />
+          </AssociationSet>
+          <EntitySet Name="Tbl_Karakterler" EntityType="ChronoTaleDBModel.Tbl_Karakterler" />
+        </EntityContainer>
+        <EntityType Name="Tbl_Karakterler">
+          <Key>
+            <PropertyRef Name="KarakterID" />
+          </Key>
+          <Property Name="KarakterID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="AdSoyad" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Aciklama" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Gorsel" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="DonemID" Type="Int32" />
+        </EntityType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="ChronoTaleDBModelStoreContainer" CdmEntityContainer="ChronoTaleDBEntities">
+          <EntitySetMapping Name="Tbl_Donemler">
+            <EntityTypeMapping TypeName="ChronoTaleDBModel.Tbl_Donemler">
+              <MappingFragment StoreEntitySet="Tbl_Donemler">
+                <ScalarProperty Name="BitisYili" ColumnName="BitisYili" />
+                <ScalarProperty Name="BaslangicYili" ColumnName="BaslangicYili" />
+                <ScalarProperty Name="DonemID" ColumnName="DonemID" />
+                <ScalarProperty Name="DonemAdi" ColumnName="DonemAdi" />
+                <ScalarProperty Name="Aciklama" ColumnName="Aciklama" />
+                <ScalarProperty Name="AktifMi" ColumnName="AktifMi" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Tbl_Hikayeler">
+            <EntityTypeMapping TypeName="ChronoTaleDBModel.Tbl_Hikayeler">
+              <MappingFragment StoreEntitySet="Tbl_Hikayeler">
+                <ScalarProperty Name="HikayeID" ColumnName="HikayeID" />
+                <ScalarProperty Name="KullaniciID" ColumnName="KullaniciID" />
+                <ScalarProperty Name="DonemID" ColumnName="DonemID" />
+                <ScalarProperty Name="Baslik" ColumnName="Baslik" />
+                <ScalarProperty Name="HikayeMetni" ColumnName="HikayeMetni" />
+                <ScalarProperty Name="GorselYolu" ColumnName="GorselYolu" />
+                <ScalarProperty Name="OlusturmaTarihi" ColumnName="OlusturmaTarihi" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Tbl_HikayeOzellikleri">
+            <EntityTypeMapping TypeName="ChronoTaleDBModel.Tbl_HikayeOzellikleri">
+              <MappingFragment StoreEntitySet="Tbl_HikayeOzellikleri">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="HikayeID" ColumnName="HikayeID" />
+                <ScalarProperty Name="OzellikID" ColumnName="OzellikID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Tbl_KarakterOzellikleri">
+            <EntityTypeMapping TypeName="ChronoTaleDBModel.Tbl_KarakterOzellikleri">
+              <MappingFragment StoreEntitySet="Tbl_KarakterOzellikleri">
+                <ScalarProperty Name="OzellikID" ColumnName="OzellikID" />
+                <ScalarProperty Name="OzellikAdi" ColumnName="OzellikAdi" />
+                <ScalarProperty Name="PromptKodu" ColumnName="PromptKodu" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Tbl_Kullanicilar">
+            <EntityTypeMapping TypeName="ChronoTaleDBModel.Tbl_Kullanicilar">
+              <MappingFragment StoreEntitySet="Tbl_Kullanicilar">
+                <ScalarProperty Name="ProfilResmi" ColumnName="ProfilResmi" />
+                <ScalarProperty Name="Cinsiyet" ColumnName="Cinsiyet" />
+                <ScalarProperty Name="Yas" ColumnName="Yas" />
+                <ScalarProperty Name="KullaniciTipi" ColumnName="KullaniciTipi" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="KullaniciID" ColumnName="KullaniciID" />
+                <ScalarProperty Name="KullaniciAdi" ColumnName="KullaniciAdi" />
+                <ScalarProperty Name="SifreHash" ColumnName="SifreHash" />
+                <ScalarProperty Name="AdSoyad" ColumnName="AdSoyad" />
+                <ScalarProperty Name="KayitTarihi" ColumnName="KayitTarihi" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Tbl_Karakterler">
+            <EntityTypeMapping TypeName="ChronoTaleDBModel.Tbl_Karakterler">
+              <MappingFragment StoreEntitySet="Tbl_Karakterler">
+                <ScalarProperty Name="DonemID" ColumnName="DonemID" />
+                <ScalarProperty Name="Gorsel" ColumnName="Gorsel" />
+                <ScalarProperty Name="Aciklama" ColumnName="Aciklama" />
+                <ScalarProperty Name="AdSoyad" ColumnName="AdSoyad" />
+                <ScalarProperty Name="KarakterID" ColumnName="KarakterID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
